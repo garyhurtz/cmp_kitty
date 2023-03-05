@@ -51,6 +51,18 @@ function Completions:add(value)
 	end
 end
 
+function Completions:filter(input)
+	local result = Set.new()
+
+	for item, _ in pairs(self.items) do
+		if item:find(input) then
+			result:add(item)
+		end
+	end
+
+	return result
+end
+
 function Completions:remove(value)
 	self.items[value] = nil
 end

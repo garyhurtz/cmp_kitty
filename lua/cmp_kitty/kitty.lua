@@ -42,16 +42,8 @@ function Kitty:is_available()
 end
 
 function Kitty:get_completion_items(input)
-	local result = Set.new()
-
-	for item, _ in pairs(self.items.items) do
-		if item:find(input) then
-			result:add(item)
-		end
-	end
-
+	local result = self.items:filter(input)
 	Logger:debug("get_completion_items: returning ", result:len())
-
 	return result
 end
 
