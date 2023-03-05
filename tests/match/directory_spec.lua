@@ -1,0 +1,28 @@
+local Match = require("cmp_kitty.match")
+local dut = Match.new()
+
+describe("directory", function()
+	it("should match directories with only leading slashes", function()
+		assert.is_true(dut:directory("/one"))
+		assert.is_true(dut:directory("/one/two"))
+		assert.is_true(dut:directory("/one/two/three"))
+	end)
+
+	it("should match directories with leading tilde", function()
+		assert.is_true(dut:directory("~/one"))
+		assert.is_true(dut:directory("~/one/two"))
+		assert.is_true(dut:directory("~/one/two/three"))
+	end)
+
+	it("should match directories with only trailing slashes", function()
+		assert.is_true(dut:directory("one/"))
+		assert.is_true(dut:directory("one/two/"))
+		assert.is_true(dut:directory("one/two/three/"))
+	end)
+
+	it("should match directories with leading and trailing slashes", function()
+		assert.is_true(dut:directory("/one/"))
+		assert.is_true(dut:directory("/one/two/"))
+		assert.is_true(dut:directory("/one/two/three/"))
+	end)
+end)

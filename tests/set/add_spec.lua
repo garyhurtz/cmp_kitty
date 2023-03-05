@@ -1,0 +1,26 @@
+local Set = require("cmp_kitty.set")
+
+describe("add", function()
+	local dut = Set.new()
+
+	it("should add item", function()
+		dut:add(1)
+		assert.same(true, dut:contains(1))
+		assert.same(1, dut:len())
+	end)
+
+	it("should add item only once", function()
+		dut:add(1)
+		dut:add(1)
+		dut:add(1)
+		assert.same(true, dut:contains(1))
+		assert.same(1, dut:len())
+	end)
+
+	it("should add multiple items", function()
+		dut:add(1)
+		dut:add(2)
+		dut:add(3)
+		assert.same(3, dut:len())
+	end)
+end)

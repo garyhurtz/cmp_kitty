@@ -1,0 +1,33 @@
+local Match = require("cmp_kitty.match")
+local dut = Match.new()
+
+describe("file", function()
+	it("should match text that looks like files", function()
+		assert.is_true(dut:file("filename.txt"))
+		assert.is_true(dut:file("/filename.txt"))
+	end)
+
+	it("should match files in directories with only leading slashes", function()
+		assert.is_true(dut:file("/one/filename.txt"))
+		assert.is_true(dut:file("/one/two/filename.txt"))
+		assert.is_true(dut:file("/one/two/three/filename.txt"))
+	end)
+
+	it("should match files in directories with leading tilde", function()
+		assert.is_true(dut:file("~/one/filename.txt"))
+		assert.is_true(dut:file("~/one/two/filename.txt"))
+		assert.is_true(dut:file("~/one/two/three/filename.txt"))
+	end)
+
+	it("should match files in directories with only trailing slashes", function()
+		assert.is_true(dut:file("one/filename.txt"))
+		assert.is_true(dut:file("one/two/filename.txt"))
+		assert.is_true(dut:file("one/two/three/filename.txt"))
+	end)
+
+	it("should match files in directories with leading and trailing slashes", function()
+		assert.is_true(dut:file("/one/filename.txt"))
+		assert.is_true(dut:file("/one/two/filename.txt"))
+		assert.is_true(dut:file("/one/two/three/filename.txt"))
+	end)
+end)

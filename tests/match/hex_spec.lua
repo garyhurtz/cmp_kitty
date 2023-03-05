@@ -1,0 +1,26 @@
+local Match = require("cmp_kitty.match")
+local dut = Match.new()
+describe("hex", function()
+	it("should not match words", function()
+		assert.is_false(dut:hex("word"))
+	end)
+
+	it("should match hex", function()
+		assert.is_true(dut:hex("ff"))
+		assert.is_true(dut:hex("ff123"))
+	end)
+
+	it("should support leading hash", function()
+		assert.is_true(dut:hex("#ff"))
+		assert.is_true(dut:hex("#ff1234"))
+	end)
+
+	it("should support leading 0x", function()
+		assert.is_true(dut:hex("0xff"))
+		assert.is_true(dut:hex("0xff1234"))
+	end)
+
+	it("should match numbers", function()
+		assert.is_true(dut:hex("123"))
+	end)
+end)

@@ -1,0 +1,33 @@
+local Match = require("cmp_kitty.match")
+local dut = Match.new()
+
+describe("hidden_file", function()
+	it("should match text that looks like hidden files", function()
+		assert.is_true(dut:hidden_file(".filename.txt"))
+		assert.is_true(dut:hidden_file("/.filename.txt"))
+	end)
+
+	it("should match hidden files in directories with only leading slashes", function()
+		assert.is_true(dut:hidden_file("/one/.filename.txt"))
+		assert.is_true(dut:hidden_file("/one/two/.filename.txt"))
+		assert.is_true(dut:hidden_file("/one/two/three/.filename.txt"))
+	end)
+
+	it("should match hidden files in directories with leading tilde", function()
+		assert.is_true(dut:hidden_file("~/one/.filename.txt"))
+		assert.is_true(dut:hidden_file("~/one/two/.filename.txt"))
+		assert.is_true(dut:hidden_file("~/one/two/three/.filename.txt"))
+	end)
+
+	it("should match hidden files in directories with only trailing slashes", function()
+		assert.is_true(dut:hidden_file("one/.filename.txt"))
+		assert.is_true(dut:hidden_file("one/two/.filename.txt"))
+		assert.is_true(dut:hidden_file("one/two/three/.filename.txt"))
+	end)
+
+	it("should match hidden files in directories with leading and trailing slashes", function()
+		assert.is_true(dut:hidden_file("/one/.filename.txt"))
+		assert.is_true(dut:hidden_file("/one/two/.filename.txt"))
+		assert.is_true(dut:hidden_file("/one/two/three/.filename.txt"))
+	end)
+end)
