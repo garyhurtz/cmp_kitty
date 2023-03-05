@@ -158,7 +158,7 @@ require('cmp').setup({
 
                 -- Timing configuration
                 window_polling_period = 2, -- in sec
-                completion_min_polling_period = 10, -- in polling periods
+                completion_min_update_period = 10, -- in polling periods
                 completion_item_lifetime = 60, -- in secs
 
             }
@@ -467,9 +467,9 @@ the window content to match.
 
 Options are:
 
-*all* - (default) include all window content, including scrollback
-*screen* - include only content that is currently visible in the window
-*selection* - include only content that is contained within a selection
+* *all* - (default) include all window content, including scrollback
+* *screen* - include only content that is currently visible in the window
+* *selection* - include only content that is contained within a selection
 
 See the [kitty docs](https://sw.kovidgoyal.net/kitty/remote-control/#kitty-get-text) for
 more information.
