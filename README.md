@@ -25,6 +25,9 @@ completions.
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - [kitty](https://github.com/kovidgoyal/kitty)
 
+Note: Communication other than via Unix sockets appears to be broken. There is temporarily an additional
+requirement of an OS that supports Unix sockets, meaning Linux and possibly Mac OS.
+
 ### Kitty Configuration
 
 This extension requires that Kitty is configured to allow remote control. Refer to the
@@ -98,7 +101,7 @@ require('cmp').setup({
                 keyword_pattern = [[\w\+]],
 
                 -- socket configuration
-                listen_on = nil,
+                listen_on = <your socket here>,
 
                 -- what information to collect
 
