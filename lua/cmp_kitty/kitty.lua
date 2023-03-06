@@ -158,17 +158,12 @@ function Kitty:update()
 end
 
 function Kitty:get_text(wid, on_data, on_exit)
-	local cmd = {
-		"kitty",
-		"@",
-		"--to",
-		self.config.listen_on,
-		"get-text",
+	local cmd = self:build_kitty_command("get-text", {
 		"--match",
 		"id:" .. wid,
 		"--extent",
 		self.config.extent,
-	}
+	})
 
 	return vim.fn.jobstart(cmd, {
 		on_exit = on_exit,
