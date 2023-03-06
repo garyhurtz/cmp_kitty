@@ -36,9 +36,8 @@ end
 -- the plugin is available if:
 -- 1) kitty executable is present
 -- 2) this is a kitty terminal
--- 3) we know how to contact kitty
 function Kitty:is_available()
-	return self.can_execute and self.is_kitty_terminal and self.config.listen_on
+	return self.can_execute and self.is_kitty_terminal
 end
 
 function Kitty:get_completion_items(input)
@@ -85,8 +84,6 @@ function Kitty:execute_kitty_command(cmd)
 	return resp
 end
 
--- loop over target windows, then call
--- for each window to parse
 function Kitty:update()
 	Logger:debug("starting update: ", os.time())
 
@@ -116,11 +113,9 @@ function Kitty:update()
 								-- schedule this window to be parsed
 								1000 * self.config.window_polling_period * (counter + 1),
 								0,
-								vim.schedule_wrap(function()
-									self:get_text(window.id, function(values)
-										self.items:update(values)
-									end, function() end)
-								end)
+								function()
+									self:get_text(window.id)
+								end
 							)
 
 							counter = counter + 1
@@ -157,7 +152,7 @@ function Kitty:update()
 	end
 end
 
-function Kitty:get_text(wid, on_data, on_exit)
+function Kitty:get_text(wid)
 	local cmd = self:build_kitty_command("get-text", {
 		"--match",
 		"id:" .. wid,
@@ -165,30 +160,24 @@ function Kitty:get_text(wid, on_data, on_exit)
 		self.config.extent,
 	})
 
-	return vim.fn.jobstart(cmd, {
-		on_exit = on_exit,
-		on_stderr = nil,
-		on_stdout = function(_, data)
-			local results = Set.new()
+	local resp = self:execute_kitty_command(cmd)
 
-			-- split each line and add it to temp
-			-- this eliminates duplicate entries
-			for _, line in ipairs(data) do
-				for word in line:gmatch("%S+") do
-					results:add(word)
-				end
-			end
+	local results = Set.new()
 
-			local matcher = Match.new(self.config)
+	-- split each line and add it to temp
+	-- this eliminates duplicate entries
+	for word in resp:gmatch("%S+") do
+		results:add(word)
+	end
 
-			local filter = function(text)
-				return matcher:match(text)
-			end
+	local matcher = Match.new(self.config)
 
-			-- filter the remaining items and return
-			on_data(results:filter(filter))
-		end,
-	})
+	local filter = function(text)
+		return matcher:match(text)
+	end
+
+	-- filter the remaining items and return
+	self.items:update(results:filter(filter))
 end
 
 return Kitty
