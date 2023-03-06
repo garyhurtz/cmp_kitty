@@ -36,8 +36,9 @@ end
 -- the plugin is available if:
 -- 1) kitty executable is present
 -- 2) this is a kitty terminal
+-- 3) we know how to communicate with kitty
 function Kitty:is_available()
-	return self.can_execute and self.is_kitty_terminal
+	return self.can_execute and self.is_kitty_terminal and self.config.listen_on ~= nil
 end
 
 function Kitty:get_completion_items(input)
@@ -74,7 +75,8 @@ function Kitty:execute_kitty_command(cmd)
 	local handle = io.popen(cmd)
 
 	if handle == nil then
-		return ""
+		Logger:debug("execute_kitty_command: handle returned nil")
+		return nil
 	end
 
 	local resp = handle:read("*all")
@@ -89,8 +91,9 @@ function Kitty:update()
 
 	-- call kitty ls and get the result
 	local command = self:build_kitty_command("ls")
-	local resp = self:execute_kitty_command(command)
-	local ls_data = vim.json.decode(resp or "{}")
+	local resp = self:execute_kitty_command(command) or "{}"
+
+	local ls_data = vim.json.decode(resp)
 
 	-- keep track of how many windows are currently matched
 	-- each window to parse will be scheduled so that one window is parsed per second
@@ -162,6 +165,10 @@ function Kitty:get_text(wid)
 
 	local resp = self:execute_kitty_command(cmd)
 
+	if resp == nil then
+		return
+	end
+
 	local results = Set.new()
 
 	-- split each line and add it to temp
@@ -176,8 +183,10 @@ function Kitty:get_text(wid)
 		return matcher:match(text)
 	end
 
+	local filtered = results:filter(filter)
+
 	-- filter the remaining items and return
-	self.items:update(results:filter(filter))
+	self.items:update(filtered)
 end
 
 return Kitty

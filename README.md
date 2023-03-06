@@ -25,33 +25,28 @@ completions.
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - [kitty](https://github.com/kovidgoyal/kitty)
 
-Note: Communication other than via Unix sockets appears to be broken. There is temporarily an additional
-requirement of an OS that supports Unix sockets, meaning Linux and possibly Mac OS.
-
 ### Kitty Configuration
 
 This extension requires that Kitty is configured to allow remote control. Refer to the
 [Kitty documentation](https://sw.kovidgoyal.net/kitty/remote-control) for detailed information
 about how this can be done.
 
-To quickly get started you can start Kitty with the *allow_remote_control* flag
+In short, you set the *allow_remote_control* line of your kitty.conf to one of:
 
-    kitty -o allow_remote_control=yes
+    allow_remote_control socket-only
+    allow_remote_control socket
+    allow_remote_control yes
 
-or set *allow_remote_control* in your *kitty.conf* file to *yes*, but consider a more restrictive
-setting such as limiting access to [sockets](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on)
-and/or requiring a [password](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.remote_control_password).
+Next, decide on a socket you would like to use (for example "unix:@kitty" or "tcp:localhost:12345"),
+then tell Kitty to listen on this socket. This can be done by either setting the *listen_on* line of your
+kitty.conf to your selected socket, or you can start kitty with the --listen-on flag:
+
+    kitty --listen-on unix:@kitty
 
 Once configured you can test the Kitty configuration using the command line by opening a separate
 terminal and executing a command such as:
 
     kitty @ ls
-
-if *allow_remote_control* is *yes*, or
-
-    kitty @ --to <your configured socket> ls
-
-if you have configured Kitty for socket communication.
 
 Once you have confirmed that Kitty is configured properly, then install and configure this
 extension.
@@ -71,7 +66,11 @@ use {
 ```lua
 require('cmp').setup({
   sources = {
-    { name = 'kitty' }
+    { name = 'kitty'
+        option = {
+            listen_on = <your socket here>
+        }
+    }
   }
 })
 ```
@@ -175,7 +174,7 @@ require('cmp').setup({
                 extent = "all",
 
                 -- Timing configuration
-                window_polling_period = 2, -- in sec
+                window_polling_period = 1, -- in sec
                 completion_min_update_period = 10, -- in polling periods
                 completion_item_lifetime = 60, -- in secs
 
