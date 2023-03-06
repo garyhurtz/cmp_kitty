@@ -4,6 +4,21 @@ Kitty completion source for [nvim-cmp](https://github.com/hrsh7th/nvim-cmp).
 
 This extension pulls text from your Kitty windows and makes it available as a completion source.
 
+## Motivation / Use case
+
+When I am working on a project I often have multiple kitty windows open containing different types of
+information from different sources, that are all related to the project. In a typical case I have a
+main kitty window containing neovim, then a few splits next to it containing test output, a command
+line, then on a separate tab I might have some documentation open and a different instance of neovim
+holding project-related notes, etc.
+
+This pulls information from each of the tabs and windows and makes it available in neovim via
+completions, which helps provide a bit more integration between the different tools.
+
+As a simple example, if I need a filename in neovim, I can jump to another window, cd to the
+directory containing the file, run ls, then jump back to neovim, and the filename now appears in my
+completions.
+
 ## Requirements
 
 - [Neovim](https://github.com/neovim/neovim/)
