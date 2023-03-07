@@ -37,6 +37,10 @@ describe("root level", function()
 		assert.is_boolean(dut.match_words)
 	end)
 
+	it("should have a match_words_with_punctuation attribute", function()
+		assert.is_boolean(dut.match_words_with_punctuation)
+	end)
+
 	it("should have a match_upper_case attribute", function()
 		assert.is_boolean(dut.match_upper_case)
 	end)

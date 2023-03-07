@@ -26,6 +26,10 @@ function Match:word(text)
 	return text:match("^%a+$") ~= nil
 end
 
+function Match:word_with_punctuation(text)
+	return text:match("^%a+%p$") ~= nil
+end
+
 function Match:upper_case(text)
 	return text:match("^%u+$") ~= nil
 end
@@ -146,6 +150,7 @@ function Match:match_word(text)
 	end
 
 	return (self.config.match_words and self:word(text))
+		or (self.config.match_words_with_punctuation and self:word_with_punctuation(text))
 		or (self.config.match_upper_case and self:upper_case(text))
 		or (self.config.match_lower_case and self:lower_case(text))
 		or (self.config.match_camel_case and self:camel_case(text))

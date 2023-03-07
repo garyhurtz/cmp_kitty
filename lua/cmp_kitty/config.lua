@@ -21,6 +21,8 @@ return {
 	match_camel_case = true,
 	match_kebab_case = true,
 	match_snake_case = true,
+	match_words_with_punctuation = true,
+
 	-- numbers
 	match_integers = true,
 	match_floats = true,

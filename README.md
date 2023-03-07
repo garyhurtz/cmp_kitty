@@ -113,6 +113,7 @@ require('cmp').setup({
                 match_camel_case = true,
                 match_kebab_case = true,
                 match_snake_case = true,
+                match_words_with_punctuation = true,
 
                 --- numbers
                 match_integers = true,
@@ -247,6 +248,10 @@ between them is designated with a single hyphen letter, rather than a space. For
 
 Match snake-case words, which are a groups of two or more case-insensitive words where the separation
 between them is designated with a single underscore, rather than a space. For example, this_is_snake_case.
+
+- match_words_with_punctuation [default: true]
+
+Same as *match_words*, but allows a single trailing punctuation character.
 
 ### Numbers
 
