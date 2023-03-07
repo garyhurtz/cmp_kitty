@@ -57,9 +57,24 @@ Use your package manager of choice. For example [packer.nvim](https://github.com
 
 ```lua
 use {
-  'garyhurtz/cmp_kitty'
+  'garyhurtz/cmp_kitty',
+  config = function()
+    require('cmp_kitty'):setup()
+  end
 }
 ```
+
+If you use [lazy.nvim](https://github.com/folke/lazy.nvim) the setup is similar:
+
+```lua
+use {
+  'garyhurtz/cmp_kitty',
+  init = function()
+    require('cmp_kitty'):setup()
+  end
+}
+```
+
 
 ## Setup
 
