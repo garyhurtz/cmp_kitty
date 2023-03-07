@@ -174,8 +174,8 @@ require('cmp').setup({
                 extent = "all",
 
                 -- Timing configuration
-                window_polling_period = 1, -- in sec
-                completion_min_update_period = 10, -- in polling periods
+                window_polling_period = 100, -- in msec
+                completion_min_update_period = 5, -- in seconds
                 completion_item_lifetime = 60, -- in secs
 
             }
@@ -501,26 +501,22 @@ whatever candidates are currently in the cache, filters them, and returns them t
 The "update cycle" runs in the background, collecting candidates from each window and adding
 them to the cache, as well as removing expired items from the cache.
 
-An update cycle begins by matching each tab and window according to the current configuration to
-determine which Kitty windows will be parsed. Once the windows to be processed during the
-update cycle have been determined, one window is processed every *window_polling_period*, with
-any completion candidates added to the cache. If there are N matching windows, the update cycle
-lasts N * *window_polling_period* seconds, or equivalently each window's content is parsed every
-N * *window_polling_period* seconds. As such, setting *window_polling_period* to a smaller value
-will make new content available in completions more quickly, at the cost of your computer doing a
-bit more work.
+An update cycle begins when the user types, and completions are requested. In the first step of
+the update cycle each tab and window are matched according to the current configuration, to
+determine which Kitty windows will be parsed. Once the windows to be processed during the update
+cycle have been determined, one window is processed every *window_polling_period* msec, with any
+completion candidates added to the cache. The polling period is intended to space out the work
+of querying Kitty and parsing content to minimize lag.
 
 At the end of the update cycle any expired candidates are pruned from the cache. Candidates expire
 if they have been in the cache for longer than the *completion_item_lifetime*.
 
-Finally, the next update cycle is scheduled. In most cases the next update cycle begins one
-*window_polling_period* after the previous update cycle ended. However, in cases where are just a few
-windows this would result in the same content being parsed over and over, which may not be necessary.
-To avoid this, the *min_update_restart_period* sets the minimum number of polling periods to wait
-before the next update cycle can start. This is specified as a number of polling periods, so this
-is effectively the minimum number of windows to consider when scheduling the next update cycle.
-To disable this feature and increase the frequency of updates when small number of windows exist, you
-can set the *min_update_restart_period* to 1.
+Finally, although we want completions to arrive quickly when we type, content in many windows
+doesn't change often so it might be nice to save a little battery life vs parsing every window for
+every word we type. This can be configured using the *min_update_restart_period* configuration item,
+which sets a simple minimum amount of time to wait (in seconds) between update cycles. If
+completions are requested during this period the items will be returned from the cache. Once this
+period expires, then a new update cycle will begin the next time completions are requested.
 
 ## Commands
 

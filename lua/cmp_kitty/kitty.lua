@@ -25,7 +25,10 @@ function Kitty:new(config)
 
 	self.items:set_item_lifetime(config.completion_item_lifetime)
 
-	-- start the update loop
+	-- flag for update timeout
+	inst.update_hold = false
+
+	-- update completions
 	inst:update()
 
 	return inst
@@ -42,8 +45,16 @@ function Kitty:is_available()
 end
 
 function Kitty:get_completion_items(input)
+	-- quickly filter the completion candidates
 	local result = self.items:filter(input)
 	Logger:debug("get_completion_items: returning ", result:len())
+
+	-- if we are not on update hold, start an update now
+	if self.update_hold == false then
+		self:update()
+	end
+
+	-- return the completions
 	return result
 end
 
@@ -89,6 +100,9 @@ end
 function Kitty:update()
 	Logger:debug("starting update: ", os.time())
 
+	-- hold other updates
+	self.update_hold = true
+
 	-- call kitty ls and get the result
 	local command = self:build_kitty_command("ls")
 	local resp = self:execute_kitty_command(command) or "{}"
@@ -114,7 +128,7 @@ function Kitty:update()
 							-- update one window per polling period
 							timer:start(
 								-- schedule this window to be parsed
-								1000 * self.config.window_polling_period * (counter + 1),
+								self.config.window_polling_period * (counter + 1),
 								0,
 								function()
 									self:get_text(window.id)
@@ -129,21 +143,13 @@ function Kitty:update()
 		end
 	end
 
-	-- schedule an update cycle to start again 1 base period after all windows have been updated
-	-- but not less than config.completion_min_polling_period
-
-	local schedule_update = 1000
-		* self.config.window_polling_period
-		* math.max(self.config.min_update_restart_period, counter + 1)
-
 	local timer = vim.loop.new_timer()
 
-	-- schedule the next update cycle
 	timer:start(
-		schedule_update,
+		1000 * self.config.min_update_restart_period,
 		0,
 		vim.schedule_wrap(function()
-			self:update()
+			self.update_hold = false
 		end)
 	)
 

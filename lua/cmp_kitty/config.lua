@@ -135,7 +135,7 @@ return {
 	extent = "all",
 
 	-- timing
-	window_polling_period = 1, -- sec_
-	min_update_restart_period = 10, -- polling_periods
+	window_polling_period = 100, -- msec_
+	min_update_restart_period = 5, -- sec
 	completion_item_lifetime = 60, -- sec
 }
