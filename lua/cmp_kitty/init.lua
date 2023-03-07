@@ -30,7 +30,6 @@ local kitty_include_window = function()
 		"id:" .. which,
 		"cmp-include",
 	})
-	print(cmd)
 	Source.kitty:execute_kitty_command(cmd)
 end
 
@@ -41,7 +40,6 @@ local kitty_exclude_window = function()
 		"id:" .. which,
 		"cmp-exclude",
 	})
-	print(cmd)
 	Source.kitty:execute_kitty_command(cmd)
 end
 
