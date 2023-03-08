@@ -62,17 +62,20 @@ use {
     require('cmp_kitty'):setup()
   end
 }
+
 ```
 
 If you use [lazy.nvim](https://github.com/folke/lazy.nvim) the setup is similar:
 
 ```lua
-use {
-  'garyhurtz/cmp_kitty',
-  init = function()
-    require('cmp_kitty'):setup()
-  end
-}
+require("lazy").setup({
+    {'garyhurtz/cmp_kitty',
+        init = function()
+            require('cmp_kitty'):setup()
+        end
+    }
+})
+
 ```
 
 
