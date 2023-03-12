@@ -11,10 +11,6 @@ describe("root level", function()
 		assert.is_string(dut.log_level)
 	end)
 
-	it("should have listen_on attribute", function()
-		assert.is_nil(dut.listen_on)
-	end)
-
 	-- cmp
 
 	it("should have a trigger_characters attribute", function()

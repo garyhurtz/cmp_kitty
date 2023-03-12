@@ -2,7 +2,6 @@ local Completions = require("cmp_kitty.completions")
 local Logger = require("cmp_kitty.logger")
 local OSWindow = require("cmp_kitty.os_window")
 local Set = require("cmp_kitty.set")
-local math = require("math")
 local Match = require("cmp_kitty.match")
 
 local Kitty = {
@@ -13,11 +12,9 @@ local Kitty = {
 function Kitty:new(config)
 	--
 	local inst = setmetatable({
-		-- receive config from source
 		config = config,
-		-- environment
-		can_execute = vim.fn.executable("kitty") == 1,
-		is_kitty_terminal = os.getenv("KITTY_WINDOW_ID") ~= nil,
+		-- env
+		is_executable = vim.fn.executable("kitty") == 1,
 	}, { __index = Kitty })
 
 	-- configure the common logger
@@ -28,24 +25,32 @@ function Kitty:new(config)
 	-- flag for update timeout
 	inst.update_hold = false
 
-	-- update completions
-	inst:update()
-
 	return inst
 end
 
 -- cmp interface
 
--- the plugin is available if:
--- 1) kitty executable is present
--- 2) this is a kitty terminal
--- 3) we know how to communicate with kitty
 function Kitty:is_available()
-	return self.can_execute and self.is_kitty_terminal and self.config.listen_on ~= nil
+	if self.is_kitty_terminal == false then
+		Logger:warning("[cmp_kitty] Kitty is not executable")
+		return false
+	end
+
+	if os.getenv("KITTY_WINDOW_ID") == nil then
+		Logger:warning("[cmp_kitty] not a Kitty window.")
+		return false
+	end
+
+	if os.getenv("KITTY_LISTEN_ON") == nil then
+		Logger:warning("[cmp_kitty] Kitty listen_on is nil.")
+		return false
+	end
+
+	return true
 end
 
 function Kitty:get_completion_items(input)
-	-- quickly filter the completion candidates
+	-- filter the completion candidates
 	local result = self.items:filter(input)
 	Logger:debug("get_completion_items: returning ", result:len())
 
@@ -66,9 +71,11 @@ function Kitty:build_kitty_command(command, args)
 		"@",
 	}
 
-	if self.config.listen_on ~= nil then
+	local kitty_listen_on = os.getenv("KITTY_LISTEN_ON")
+
+	if kitty_listen_on ~= nil then
 		table.insert(cmd, "--to")
-		table.insert(cmd, self.config.listen_on)
+		table.insert(cmd, kitty_listen_on)
 	end
 
 	table.insert(cmd, command)
@@ -86,13 +93,19 @@ function Kitty:execute_kitty_command(cmd)
 	local handle = io.popen(cmd)
 
 	if handle == nil then
-		Logger:debug("execute_kitty_command: handle returned nil")
+		Logger:error("[cmp_kitty] Kitty communication error")
 		return nil
 	end
 
 	local resp = handle:read("*all")
 
 	handle:close()
+
+	-- return nil on empty response
+	if resp == "" then
+		resp = nil
+		Logger:error("[cmp_kitty] Kitty communication error - is listen_on correct?")
+	end
 
 	return resp
 end
@@ -105,6 +118,8 @@ function Kitty:update()
 
 	-- call kitty ls and get the result
 	local command = self:build_kitty_command("ls")
+
+	-- on empty response return empty table
 	local resp = self:execute_kitty_command(command) or "{}"
 
 	local ls_data = vim.json.decode(resp)

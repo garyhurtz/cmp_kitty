@@ -2,7 +2,7 @@
 
 Kitty completion source for [nvim-cmp](https://github.com/hrsh7th/nvim-cmp).
 
-This extension pulls text from your Kitty windows and makes it available as a completion source.
+This extension pulls text from your Kitty windows and makes it available in your completions.
 
 ## Motivation / Use case
 
@@ -25,6 +25,9 @@ completions.
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - [kitty](https://github.com/kovidgoyal/kitty)
 
+> Note: This plugin is still in active development. Breaking changes may occur. Check back
+often for changes to configuration, setup, features, etc.
+
 ### Kitty Configuration
 
 This extension requires that Kitty is configured to allow remote control. Refer to the
@@ -37,121 +40,157 @@ In short, you set the *allow_remote_control* line of your kitty.conf to one of:
     allow_remote_control socket
     allow_remote_control yes
 
-Next, decide on a socket you would like to use (for example "unix:@kitty" or "tcp:localhost:12345"),
-then tell Kitty to listen on this socket. This can be done by either setting the *listen_on* line of your
-kitty.conf to your selected socket, or you can start kitty with the --listen-on flag:
-
-    kitty --listen-on unix:@kitty
+Next, follow [the instructions](https://sw.kovidgoyal.net/kitty/conf/#opt-kitty.listen_on) for setting
+the socket that Kitty will use to communicate.
 
 Once configured you can test the Kitty configuration using the command line by opening a separate
 terminal and executing a command such as:
 
     kitty @ ls
 
+which will return a JSON response if everything is configured correctly.
+
 Once you have confirmed that Kitty is configured properly, then install and configure this
 extension.
 
-## Installation
+## Installation and setup
 
 Use your package manager of choice. For example [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use {
   'garyhurtz/cmp_kitty',
-  config = function()
-    require('cmp_kitty'):setup()
-  end
+    config = function()
+        require('cmp_kitty'):setup()
+    end
 }
 
 ```
 
-If you use [lazy.nvim](https://github.com/folke/lazy.nvim) the setup is similar:
-
-```lua
-require("lazy").setup({
-    {'garyhurtz/cmp_kitty',
-        init = function()
-            require('cmp_kitty'):setup()
-        end
-    }
-})
-
-```
-
-
-## Setup
+then
 
 ```lua
 require('cmp').setup({
   sources = {
     { name = 'kitty'
         option = {
-            listen_on = <your socket here>
+            -- this is where any configuration should be inserted
         }
     }
   }
 })
 ```
 
+
+If you use [lazy.nvim](https://github.com/folke/lazy.nvim) the setup would be something like this:
+
+```lua
+require("lazy").setup({
+	{
+		"hrsh7th/nvim-cmp",
+		opts = {
+			completion = {
+			    ...
+			},
+			sources = {
+			    ...
+				{
+					name = "kitty",
+					option = {
+					    -- this is where any configuration should be inserted
+					},
+				},
+			},
+		},
+	},
+	{
+		"garyhurtz/cmp_kitty",
+		dependencies = {
+			{ "hrsh7th/nvim-cmp" },
+		},
+        init = function()
+            require('cmp_kitty'):setup()
+        end
+	},
+})
+```
+
+After installation is complete, you can test communication between cmp_kitty and Kitty itself with the command:
+
+    :CmpKittyLs
+
+This should open a new buffer and insert the contents of Kitty's JSON response.
+
+See below for more information about this command.
+
 ## Configuration
 
-Configuration follows nvim-cmp's standard *options* table. An example is shown below, which includes
-all options with their default values.
+Configuration follows nvim-cmp's standard *option* table. An example is shown below, which includes
+all options with their default values. Note that function bodies have been removed and moved to their
+respective sections of the documentation.
 
 By default all tabs and windows are matched and parsed, and all target information is returned. This should
 be what most people want, but if you would like to remove some types of information that gets inserted
 into your completions you can set the associated *match_* configuration option to false.
-
-A simplified version of plugin configuration is below, where function
-bodies have been removed and added to their respective sections of the documentation:
-
 ```lua
-require('cmp').setup({
-    sources = {
-        {   name = 'kitty',
-            option = {
+{
+    name = 'kitty',
+    option = {
 
-                -- cmp configuration
-                label = '[kitty]',
-                trigger_characters = {},
-                trigger_characters_ft = {},
-                keyword_pattern = [[\w\+]],
+        -- cmp configuration
+        label = '[kitty]',
+        trigger_characters = {},
+        trigger_characters_ft = {},
+        keyword_pattern = [[\w\+]],
 
-                -- socket configuration
-                listen_on = <your socket here>,
+        -- what information to collect
 
-                -- what information to collect
+        --- words
+        match_words = true,
+        match_upper_case = false,
+        match_lower_case = false,
+        match_capitalized = false,
+        match_alphanumerics = true,
+        match_camel_case = true,
+        match_kebab_case = true,
+        match_snake_case = true,
+        match_words_with_punctuation = true,
 
-                --- words
-                match_words = true,
-                match_upper_case = false,
-                match_lower_case = false,
-                match_capitalized = false,
-                match_alphanumerics = true,
-                match_camel_case = true,
-                match_kebab_case = true,
-                match_snake_case = true,
-                match_words_with_punctuation = true,
+        --- numbers
+        match_integers = true,
+        match_floats = true,
+        match_hex_strings = true,
+        match_binary_strings = true,
 
-                --- numbers
-                match_integers = true,
-                match_floats = true,
-                match_hex_strings = true,
-                match_binary_strings = true,
+        --- computing
+        match_emails = true,
+        match_ip_addrs = true,
+        match_uuids = true,
 
-                --- computing
-                match_emails = true,
-                match_ip_addrs = true,
-                match_uuids = true,
+        --- paths
+        match_urls = true,
+        match_directories = true,
+        match_files = true,
+        match_hidden_files = true,
 
-                --- paths
-                match_urls = true,
-                match_directories = true,
-                match_files = true,
-                match_hidden_files = true,
+        -- window matching configuration
+        os_window = {
 
-                -- window matching configuration
-                os_window = {
+            include_focused = true,
+            include_unfocused = true,
+
+            include_active = true,
+            include_inactive = true,
+
+            tab = {
+
+                include_active = true,
+                include_inactive = true,
+
+                include_title = function,
+                exclude_title = function,
+
+                window = {
 
                     include_focused = true,
                     include_unfocused = true,
@@ -159,70 +198,30 @@ require('cmp').setup({
                     include_active = true,
                     include_inactive = true,
 
-                    tab = {
+                    include_title = function,
+                    exclude_title = function,
 
-                        include_active = true,
-                        include_inactive = true,
+                    include_cwd = function,
+                    exclude_cwd = function,
 
-                        include_title = function,
-                        exclude_title = function,
+                    include_env = function,
+                    exclude_env = function,
 
-                        window = {
-
-                            include_focused = true,
-                            include_unfocused = true,
-
-                            include_active = true,
-                            include_inactive = true,
-
-                            include_title = function,
-                            exclude_title = function,
-
-                            include_cwd = function,
-                            exclude_cwd = function,
-
-                            include_env = function,
-                            exclude_env = function,
-
-                            include_foreground_process = function,
-                            exclude_foreground_process = function,
-                        },
-                    },
+                    include_foreground_process = function,
+                    exclude_foreground_process = function,
                 },
+            },
+        },
 
-                extent = "all",
+        extent = "all",
 
-                -- Timing configuration
-                window_polling_period = 100, -- in msec
-                completion_min_update_period = 5, -- in seconds
-                completion_item_lifetime = 60, -- in secs
-
-            }
-        }
+        -- Timing configuration
+        window_polling_period = 100, -- in msec
+        completion_min_update_period = 5, -- in seconds
+        completion_item_lifetime = 60, -- in seconds
     }
-})
+}
 ```
-
-### Socket configuration
-
-Refer to the [Kitty documentation](https://sw.kovidgoyal.net/kitty/remote-control/#remote-control-via-a-socket)
-for information about configuring sockets.
-
-#### listen_on
-
-If you have configured Kitty to listen on a socket, then set this to tell Kitty where to listen
-for remote control commands. This should be set to what you used for <your configured socket> in
-the Kitty Configuration section above. For example, if you are using a unix socket you might use:
-
-    unix:@kitty
-
-See the [kitty docs](https://sw.kovidgoyal.net/kitty/remote-control) for more information.
-
-You can test communication between cmp_kitty and Kitty itself with the command:
-
-    :CmpKittyLs
-
-See below for more information about this command.
 
 ## Content parsing configuration
 
@@ -537,9 +536,9 @@ if they have been in the cache for longer than the *completion_item_lifetime*.
 Finally, although we want completions to arrive quickly when we type, content in many windows
 doesn't change often so it might be nice to save a little battery life vs parsing every window for
 every word we type. This can be configured using the *min_update_restart_period* configuration item,
-which sets a simple minimum amount of time to wait (in seconds) between update cycles. If
-completions are requested during this period the items will be returned from the cache. Once this
-period expires, then a new update cycle will begin the next time completions are requested.
+which sets the minimum amount of time to wait (in seconds) between update cycles. If
+completions are requested during this period the items will be returned from the cache. After this
+period expires, a new update cycle will begin the next time completions are requested.
 
 ## Commands
 

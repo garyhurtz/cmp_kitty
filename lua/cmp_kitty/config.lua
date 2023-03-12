@@ -7,10 +7,7 @@ return {
 	keyword_pattern = [[\w\+]],
 
 	-- logger
-	log_level = "off",
-
-	-- socket configuration
-	listen_on = nil,
+	log_level = "warning",
 
 	-- what information to collect
 	match_words = true,
@@ -28,11 +25,13 @@ return {
 	match_floats = true,
 	match_hex_strings = true,
 	match_binary_strings = true,
+
 	--- computing
 	match_emails = true,
 	match_ip_addrs = true,
 	match_urls = true,
 	match_uuids = true,
+
 	--- filesystem
 	match_directories = true,
 	match_files = true,
