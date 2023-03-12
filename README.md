@@ -86,32 +86,32 @@ If you use [lazy.nvim](https://github.com/folke/lazy.nvim) the setup would be so
 
 ```lua
 require("lazy").setup({
-	{
-		"hrsh7th/nvim-cmp",
-		opts = {
-			completion = {
-			    ...
-			},
-			sources = {
-			    ...
-				{
-					name = "kitty",
-					option = {
-					    -- this is where any configuration should be inserted
-					},
-				},
-			},
-		},
-	},
-	{
-		"garyhurtz/cmp_kitty",
-		dependencies = {
-			{ "hrsh7th/nvim-cmp" },
-		},
+    {
+        "hrsh7th/nvim-cmp",
+        opts = {
+            completion = {
+                ...
+            },
+            sources = {
+                ...
+                {
+                    name = "kitty",
+                    option = {
+                        -- this is where any configuration should be inserted
+                    },
+                },
+            },
+        },
+    },
+    {
+        "garyhurtz/cmp_kitty",
+        dependencies = {
+            { "hrsh7th/nvim-cmp" },
+        },
         init = function()
             require('cmp_kitty'):setup()
         end
-	},
+    },
 })
 ```
 
