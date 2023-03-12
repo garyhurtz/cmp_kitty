@@ -18,6 +18,10 @@ local kitty_ls = function()
 	vim.api.nvim_win_set_cursor(0, { 1, 0 })
 end
 
+local kitty_update = function()
+	Source.kitty:update()
+end
+
 local kitty_select_window = function()
 	local cmd = Source.kitty:build_kitty_command("select-window")
 	return Source.kitty:execute_kitty_command(cmd):gsub("[\n]", "")
@@ -56,4 +60,10 @@ vim.api.nvim_create_user_command(
 	{ nargs = 0, desc = "Exclude Kitty window" }
 )
 
+local cmp_kitty_group = vim.api.nvim_create_augroup("cmp_kitty", { clear = false })
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
+	group = cmp_kitty_group,
+	callback = kitty_update,
+})
 return Source
