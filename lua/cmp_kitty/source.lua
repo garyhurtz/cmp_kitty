@@ -45,21 +45,9 @@ function Source:execute(completion_item, callback)
 	callback(completion_item)
 end
 
-function Source:transform_item(item)
-	return { label = item }
-end
-
 function Source:complete(request, callback)
 	local input = string.sub(request.context.cursor_before_line, request.offset)
-	local raw_items = self.kitty:get_completion_items(input)
-
-	local transformed_items = {}
-
-	for item, _ in pairs(raw_items.items) do
-		table.insert(transformed_items, self:transform_item(item))
-	end
-
-	callback(transformed_items)
+	callback(self.kitty:get_completion_items(input))
 end
 
 return Source

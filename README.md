@@ -25,8 +25,18 @@ completions.
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - [kitty](https://github.com/kovidgoyal/kitty)
 
-> Note: This plugin is still in active development. Breaking changes may occur. Check back
+## Important Note
+
+This plugin is still in active development. Breaking changes may occur. Check back
 often for changes to configuration, setup, features, etc.
+
+Recent Updates:
+
+* Improve compatibility with [lazy.nvim](https://github.com/folke/lazy.nvim)
+
+* More responsive completions
+
+* Implement more specific completion types
 
 ### Kitty Configuration
 
@@ -134,11 +144,9 @@ be what most people want, but if you would like to remove some types of informat
 into your completions you can set the associated *match_* configuration option to false.
 ```lua
 {
-    name = 'kitty',
     option = {
 
         -- cmp configuration
-        label = '[kitty]',
         trigger_characters = {},
         trigger_characters_ft = {},
         keyword_pattern = [[\w\+]],
@@ -268,7 +276,8 @@ between them is designated with a single underscore, rather than a space. For ex
 
 - match_words_with_punctuation [default: true]
 
-Same as *match_words*, but allows a single trailing punctuation character.
+Similar to *match_words*, but matches words with a single trailing punctuation character, then
+returns the word.
 
 ### Numbers
 

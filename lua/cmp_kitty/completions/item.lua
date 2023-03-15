@@ -1,8 +1,9 @@
 local Item = {}
 
-Item.new = function(value, period)
+Item.new = function(obj, period)
 	local inst = {
-		value = value,
+		label = obj.label,
+		obj = obj,
 		period = period,
 		expiration = os.time() + period,
 	}
@@ -24,10 +25,14 @@ end
 
 function Item:__tostring()
 	if self:expired() then
-		return self.value .. " [expired]"
+		return self.label .. " [expired]"
 	else
-		return self.value .. " [" .. (self.expiration - os.time()) .. "]"
+		return self.label .. " [" .. (self.expiration - os.time()) .. "]"
 	end
+end
+
+function Item.is_item(other)
+	return getmetatable(other) == Item
 end
 
 function Item:expired()

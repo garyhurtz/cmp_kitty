@@ -5,15 +5,15 @@ describe("completions", function()
 	dut:set_item_lifetime(60)
 
 	it("is a Completions", function()
-		assert.equals(true, Completions.is_completions(dut))
+		assert.equal(true, Completions.is_completions(dut))
 	end)
 
 	it("is empty", function()
-		assert.equals(0, dut:len())
+		assert.equal(0, dut:len())
 	end)
 
 	it("sets lifetime", function()
-		assert.same(60, dut.lifetime)
+		assert.equal(60, dut.lifetime)
 	end)
 
 	it("sets expiration", function()

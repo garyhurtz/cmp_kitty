@@ -1,7 +1,6 @@
 local Completions = require("cmp_kitty.completions")
 local Logger = require("cmp_kitty.logger")
 local OSWindow = require("cmp_kitty.os_window")
-local Set = require("cmp_kitty.set")
 local Match = require("cmp_kitty.match")
 
 local Kitty = {
@@ -22,6 +21,8 @@ function Kitty:new(config)
 
 	self.items:set_item_lifetime(config.completion_item_lifetime)
 
+	self.matcher = Match.new(config)
+
 	-- flag for update timeout
 	inst.update_hold = false
 
@@ -31,6 +32,10 @@ end
 -- cmp interface
 
 function Kitty:is_available()
+	if self.config.enabled == false then
+		return false
+	end
+
 	if self.is_kitty_terminal == false then
 		Logger:warning("[cmp_kitty] Kitty is not executable")
 		return false
@@ -52,7 +57,7 @@ end
 function Kitty:get_completion_items(input)
 	-- filter the completion candidates
 	local result = self.items:filter(input)
-	Logger:debug("get_completion_items: returning ", result:len())
+	Logger:debug("get_completion_items: returning ", #result)
 
 	-- if we are not on update hold, start an update now
 	if self.update_hold == false then
@@ -111,6 +116,10 @@ function Kitty:execute_kitty_command(cmd)
 end
 
 function Kitty:update()
+	if self:is_available() == false then
+		return
+	end
+
 	Logger:debug("starting update: ", os.time())
 
 	-- hold other updates
@@ -190,24 +199,21 @@ function Kitty:get_text(wid)
 		return
 	end
 
-	local results = Set.new()
+	local temp = Completions.new()
+	temp:set_item_lifetime(self.config.completion_item_lifetime)
 
 	-- split each line and add it to temp
-	-- this eliminates duplicate entries
 	for word in resp:gmatch("%S+") do
-		results:add(word)
+		temp:add({ label = word })
 	end
 
-	local matcher = Match.new(self.config)
+	for _, item in pairs(temp.items) do
+		local result = self.matcher:match(item.obj)
 
-	local filter = function(text)
-		return matcher:match(text)
+		if result ~= nil then
+			self.items:add(result)
+		end
 	end
-
-	local filtered = results:filter(filter)
-
-	-- filter the remaining items and return
-	self.items:update(filtered)
 end
 
 return Kitty

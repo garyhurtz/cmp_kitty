@@ -1,4 +1,3 @@
-local Set = require("cmp_kitty.set")
 local Item = require("cmp_kitty.completions.item")
 
 local Completions = {}
@@ -43,42 +42,32 @@ function Completions:set_item_lifetime(lifetime)
 	self.expiration = os.time() + lifetime
 end
 
-function Completions:add(value)
-	if self:contains(value) then
-		self.items[value]:reset()
+function Completions:add(obj)
+	if self:contains(obj.label) then
+		self.items[obj.label]:reset()
 	else
-		self.items[value] = Item.new(value, self.lifetime)
+		self.items[obj.label] = Item.new(obj, self.lifetime)
 	end
 end
 
 function Completions:filter(input)
-	local result = Set.new()
+	local result = {}
 
-	for item, _ in pairs(self.items) do
-		if item:find(input) then
-			result:add(item)
+	for label, item in pairs(self.items) do
+		if label:find(input) then
+			table.insert(result, item.obj)
 		end
 	end
 
 	return result
 end
 
-function Completions:remove(value)
-	self.items[value] = nil
+function Completions:remove(label)
+	self.items[label] = nil
 end
 
-function Completions:values()
-	local values = Set.new()
-
-	for value, _ in pairs(self.items) do
-		values:add(value)
-	end
-
-	return values
-end
-
-function Completions:contains(value)
-	return self.items[value] ~= nil
+function Completions:contains(label)
+	return self.items[label] ~= nil
 end
 
 function Completions:len()
@@ -92,24 +81,24 @@ function Completions:len()
 end
 
 function Completions:update(other)
-	assert(Completions.is_completions(other) or Set.is_set(other))
+	assert(Completions.is_completions(other))
 
-	for value, _ in pairs(other.items) do
-		self:add(value)
+	for _, item in pairs(other.items) do
+		self:add(item)
 	end
 end
 
 function Completions:clear()
-	for value, _ in pairs(self.items) do
-		self:remove(value)
+	for label, _ in pairs(self.items) do
+		self:remove(label)
 	end
 end
 
 function Completions:join(sep)
 	sep = sep or ","
 	local result = ""
-	for value, _ in pairs(self.items) do
-		result = result .. value .. sep
+	for label, _ in pairs(self.items) do
+		result = result .. label .. sep
 	end
 	return result
 end
@@ -117,10 +106,10 @@ end
 function Completions:prune()
 	local count = 0
 
-	for value, item in pairs(self.items) do
+	for label, item in pairs(self.items) do
 		if item:expired() then
 			count = count + 1
-			self:remove(value)
+			self:remove(label)
 		end
 	end
 

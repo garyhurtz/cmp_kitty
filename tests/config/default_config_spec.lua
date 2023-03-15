@@ -3,10 +3,6 @@ local config = require("cmp_kitty.config")
 describe("root level", function()
 	local dut = config
 
-	it("should have a label attribute", function()
-		assert.is_string(dut.label)
-	end)
-
 	it("should have a log_level attribute", function()
 		assert.is_string(dut.log_level)
 	end)

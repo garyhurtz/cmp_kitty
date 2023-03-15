@@ -1,41 +1,70 @@
 local Match = require("cmp_kitty.match")
-
 local dut = Match.new()
+local cmp = require("cmp")
+
 describe("emails", function()
 	it("should match simple emails", function()
-		assert.is_true(dut:email("test@example.com"))
+		local label = "test@example.com"
+		local result = dut:email({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should allow dots in username", function()
-		assert.is_true(dut:email("other.test@example.com"))
+		local label = "other.test@example.com"
+		local result = dut:email({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should allow dashes in username", function()
-		assert.is_true(dut:email("other-test@example.com"))
+		local label = "other-test@example.com"
+		local result = dut:email({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should allow underscores in username", function()
-		assert.is_true(dut:email("other_test@example.com"))
+		local label = "other_test@example.com"
+		local result = dut:email({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should allow dashes in domain", function()
-		assert.is_true(dut:email("test@other-example.com"))
+		local label = "test@other-example.com"
+		local result = dut:email({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should allow underscores in domain", function()
-		assert.is_true(dut:email("test@other_example.com"))
+		local label = "test@other_example.com"
+		local result = dut:email({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should match tlds", function()
-		assert.is_true(dut:email("test@example.com.uk"))
+		local label = "test@example.com.uk"
+		local result = dut:email({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should not match words", function()
-		assert.is_false(dut:email("test"))
-		assert.is_false(dut:email("example"))
-		assert.is_false(dut:email("com"))
+		assert.is_nil(dut:email({ label = "test" }))
+		assert.is_nil(dut:email({ label = "example" }))
+		assert.is_nil(dut:email({ label = "com" }))
 	end)
 	it("should not match numbers", function()
-		assert.is_false(dut:email("123"))
+		assert.is_nil(dut:email({ label = "123" }))
 	end)
 end)

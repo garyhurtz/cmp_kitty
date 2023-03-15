@@ -1,7 +1,8 @@
 return {
 
 	-- cmp
-	label = "[kitty]",
+	enabled = true,
+
 	trigger_characters = {},
 	trigger_characters_ft = {},
 	keyword_pattern = [[\w\+]],

@@ -1,33 +1,117 @@
 local Match = require("cmp_kitty.match")
 local dut = Match.new()
+local cmp = require("cmp")
 
 describe("file", function()
-	it("should match text that looks like files", function()
-		assert.is_true(dut:file("filename.txt"))
-		assert.is_true(dut:file("/filename.txt"))
+	it("should match text that looks like files 1", function()
+		local label = "filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
 	end)
 
-	it("should match files in directories with only leading slashes", function()
-		assert.is_true(dut:file("/one/filename.txt"))
-		assert.is_true(dut:file("/one/two/filename.txt"))
-		assert.is_true(dut:file("/one/two/three/filename.txt"))
+	it("should match text that looks like files 2", function()
+		local label = "/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
 	end)
 
-	it("should match files in directories with leading tilde", function()
-		assert.is_true(dut:file("~/one/filename.txt"))
-		assert.is_true(dut:file("~/one/two/filename.txt"))
-		assert.is_true(dut:file("~/one/two/three/filename.txt"))
+	it("should match files in directories with only leading slashes 1", function()
+		local label = "/one/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
 	end)
 
-	it("should match files in directories with only trailing slashes", function()
-		assert.is_true(dut:file("one/filename.txt"))
-		assert.is_true(dut:file("one/two/filename.txt"))
-		assert.is_true(dut:file("one/two/three/filename.txt"))
+	it("should match files in directories with only leading slashes 2", function()
+		local label = "/one/two/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
 	end)
 
-	it("should match files in directories with leading and trailing slashes", function()
-		assert.is_true(dut:file("/one/filename.txt"))
-		assert.is_true(dut:file("/one/two/filename.txt"))
-		assert.is_true(dut:file("/one/two/three/filename.txt"))
+	it("should match files in directories with only leading slashes 3", function()
+		local label = "/one/two/three/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with leading tilde 1", function()
+		local label = "~/one/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with leading tilde 2", function()
+		local label = "~/one/two/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with leading tilde 3", function()
+		local label = "~/one/two/three/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with only trailing slashes 1", function()
+		local label = "one/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with only trailing slashes 2", function()
+		local label = "one/two/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with only trailing slashes 3", function()
+		local label = "one/two/three/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with leading and trailing slashes 1", function()
+		local label = "/one/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with leading and trailing slashes 2", function()
+		local label = "/one/two/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
+	end)
+
+	it("should match files in directories with leading and trailing slashes 3", function()
+		local label = "/one/two/three/filename.txt"
+		local result = dut:file({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.File, result.kind)
 	end)
 end)

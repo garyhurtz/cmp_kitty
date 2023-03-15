@@ -1,24 +1,41 @@
 local Match = require("cmp_kitty.match")
-
+local cmp = require("cmp")
 local dut = Match.new()
+
 describe("urls", function()
 	it("should match http urls", function()
-		assert.is_true(dut:url("http://example.com"))
+		local label = "http://example.com"
+		local result = dut:url({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should match https urls", function()
-		assert.is_true(dut:url("https://example.com"))
+		local label = "https://example.com"
+		local result = dut:url({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should allow dashes in domain", function()
-		assert.is_true(dut:url("https://one-two.com"))
+		local label = "https://one-two.com"
+		local result = dut:url({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should match tlds", function()
-		assert.is_true(dut:url("http://example.com.uk"))
+		local label = "http://example.com.uk"
+		local result = dut:url({ label = label })
+
+		assert.equal(label, result.label)
+		assert.equal(cmp.lsp.CompletionItemKind.Text, result.kind)
 	end)
 
 	it("should not match numbers", function()
-		assert.is_false(dut:email("123"))
+		assert.is_nil(dut:url({ label = "123" }))
 	end)
 end)
