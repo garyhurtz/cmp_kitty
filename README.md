@@ -38,6 +38,8 @@ Recent Updates:
 
 * Implement more specific completion types
 
+* Add *strict_matching* to provide more control over which suggestions are returned
+
 ### Kitty Configuration
 
 This extension requires that Kitty is configured to allow remote control. Refer to the
@@ -143,54 +145,64 @@ By default all tabs and windows are matched and parsed, and all target informati
 be what most people want, but if you would like to remove some types of information that gets inserted
 into your completions you can set the associated *match_* configuration option to false.
 ```lua
-{
-    option = {
+option = {
 
-        -- cmp configuration
-        trigger_characters = {},
-        trigger_characters_ft = {},
-        keyword_pattern = [[\w\+]],
+    -- cmp configuration
+    trigger_characters = {},
+    trigger_characters_ft = {},
+    keyword_pattern = [[\w\+]],
 
-        -- what information to collect
+    -- what information to collect
 
-        --- words
-        match_words = true,
-        match_upper_case = false,
-        match_lower_case = false,
-        match_capitalized = false,
-        match_alphanumerics = true,
-        match_camel_case = true,
-        match_kebab_case = true,
-        match_snake_case = true,
-        match_words_with_punctuation = true,
+    --- words
+    match_words = true,
+    match_upper_case = false,
+    match_lower_case = false,
+    match_capitalized = false,
+    match_alphanumerics = true,
+    match_camel_case = true,
+    match_kebab_case = true,
+    match_snake_case = true,
+    match_words_with_punctuation = true,
 
-        --- numbers
-        match_integers = true,
-        match_floats = true,
-        match_hex_strings = true,
-        match_binary_strings = true,
+    --- numbers
+    match_integers = true,
+    match_floats = true,
+    match_hex_strings = true,
+    match_binary_strings = true,
 
-        --- computing
-        match_emails = true,
-        match_ip_addrs = true,
-        match_uuids = true,
+    --- computing
+    match_emails = true,
+    match_ip_addrs = true,
+    match_uuids = true,
 
-        --- paths
-        match_urls = true,
-        match_directories = true,
-        match_files = true,
-        match_hidden_files = true,
+    --- paths
+    match_urls = true,
+    match_directories = true,
+    match_files = true,
+    match_hidden_files = true,
 
-        -- window matching configuration
-        os_window = {
+    -- window matching configuration
+    os_window = {
 
-            include_focused = true,
-            include_unfocused = true,
+        include_focused = true,
+        include_unfocused = true,
+
+        include_active = true,
+        include_inactive = true,
+
+        tab = {
 
             include_active = true,
             include_inactive = true,
 
-            tab = {
+            include_title = function,
+            exclude_title = function,
+
+            window = {
+
+                include_focused = true,
+                include_unfocused = true,
 
                 include_active = true,
                 include_inactive = true,
@@ -198,37 +210,28 @@ into your completions you can set the associated *match_* configuration option t
                 include_title = function,
                 exclude_title = function,
 
-                window = {
+                include_cwd = function,
+                exclude_cwd = function,
 
-                    include_focused = true,
-                    include_unfocused = true,
+                include_env = function,
+                exclude_env = function,
 
-                    include_active = true,
-                    include_inactive = true,
-
-                    include_title = function,
-                    exclude_title = function,
-
-                    include_cwd = function,
-                    exclude_cwd = function,
-
-                    include_env = function,
-                    exclude_env = function,
-
-                    include_foreground_process = function,
-                    exclude_foreground_process = function,
-                },
+                include_foreground_process = function,
+                exclude_foreground_process = function,
             },
         },
+    },
 
-        extent = "all",
+    extent = "all",
 
-        -- Timing configuration
-        window_polling_period = 100, -- in msec
-        completion_min_update_period = 5, -- in seconds
-        completion_item_lifetime = 60, -- in seconds
-    }
+    strict_matching = true,
+
+    -- Timing configuration
+    window_polling_period = 100, -- in msec
+    completion_min_update_period = 5, -- in seconds
+    completion_item_lifetime = 60, -- in seconds
 }
+
 ```
 
 ## Content parsing configuration
@@ -521,6 +524,17 @@ Options are:
 
 See the [kitty docs](https://sw.kovidgoyal.net/kitty/remote-control/#kitty-get-text) for
 more information.
+
+### Strict matching
+
+nvim-cmp provides several configuration options to allow you a bit of control over how many
+completions each source returns. This source supplements these with the *strict_matching*
+configuration option.
+
+When *strict_matching* is false (the default) nvim-cmp determines which completion candidates to
+suggest according to its configuration, which by default uses fuzzy-matching. Set *strict_matching*
+to true if you would like to limit the suggestions that are returned from this source to only those
+items that strictly-match the current input.
 
 ## Timing Configuration
 

@@ -55,8 +55,14 @@ function Kitty:is_available()
 end
 
 function Kitty:get_completion_items(input)
-	-- filter the completion candidates
-	local result = self.items:filter(input)
+	local result
+
+	if self.config.strict_matching then
+		result = self.items:filter(input)
+	else
+		result = self.items:all()
+	end
+
 	Logger:debug("get_completion_items: returning ", #result)
 
 	-- if we are not on update hold, start an update now
@@ -64,7 +70,6 @@ function Kitty:get_completion_items(input)
 		self:update()
 	end
 
-	-- return the completions
 	return result
 end
 

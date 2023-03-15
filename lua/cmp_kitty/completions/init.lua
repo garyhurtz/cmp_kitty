@@ -50,6 +50,16 @@ function Completions:add(obj)
 	end
 end
 
+function Completions:all()
+	local result = {}
+
+	for _, item in pairs(self.items) do
+		table.insert(result, item.obj)
+	end
+
+	return result
+end
+
 function Completions:filter(input)
 	local result = {}
 

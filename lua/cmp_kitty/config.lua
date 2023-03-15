@@ -132,9 +132,11 @@ return {
 		},
 	},
 
-	-- the extent of the content to extract from each matched window
+	-- The extent of the content to extract from each matched window
 	-- this is passed directly to Kitty and accepts any value that Kitty accepts
 	extent = "all",
+
+	strict_matching = false,
 
 	-- timing
 	window_polling_period = 100, -- msec_
