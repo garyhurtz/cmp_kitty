@@ -3,6 +3,8 @@
 Kitty completion source for [nvim-cmp](https://github.com/hrsh7th/nvim-cmp).
 
 This extension pulls text from your Kitty windows and makes it available in your completions.
+A wide range of configuration options allow you to fine-tune which types of information is
+added to your completions, as well as which windows contribute completions.
 
 ## Motivation / Use case
 
@@ -37,6 +39,8 @@ Recent Updates:
 * Add *strict_matching* to provide more control over which suggestions are returned
 
 * Add *match_files_by_suffix* as an alternative (and complementary) method of extracting filenames
+
+* *match_urls* now supports customizable URL schemes
 
 ### Kitty Configuration
 
@@ -175,7 +179,7 @@ option = {
     match_uuids = true,
 
     --- paths
-    match_urls = true,
+    match_urls = { "https?" },
     match_directories = true,
     match_files = true,
     match_files_by_suffix = {},
@@ -318,7 +322,12 @@ Match strings that appear to be UUIDs.
 
 - match_urls
 
-Match strings that appear to be URLs.
+Match strings that appear to be URLs that start with one of the specified schemes. By default,
+this matches strings that appear to be either http or https URLs. You can specify other schemes by
+adding them to the *match_urls* config table. Note that schemes specified in your
+configuration replace the default rather than add to it, meaning that if you want to match URLs
+starting with http and/or https in addition to others you need to specify http, https, or https?
+in your configuration.
 
 - match_directories
 

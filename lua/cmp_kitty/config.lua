@@ -30,7 +30,7 @@ return {
 	--- computing
 	match_emails = true,
 	match_ip_addrs = true,
-	match_urls = true,
+	match_urls = { "https?" },
 	match_uuids = true,
 
 	--- filesystem
