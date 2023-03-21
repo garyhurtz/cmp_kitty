@@ -36,7 +36,7 @@ Recent Updates:
 
 * Add *strict_matching* to provide more control over which suggestions are returned
 
-* Add *files_by_suffix* as an alternative (and complementary) method of extracting filenames
+* Add *match_files_by_suffix* as an alternative (and complementary) method of extracting filenames
 
 ### Kitty Configuration
 
