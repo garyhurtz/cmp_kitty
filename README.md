@@ -32,13 +32,11 @@ often for changes to configuration, setup, features, etc.
 
 Recent Updates:
 
-* Improve compatibility with [lazy.nvim](https://github.com/folke/lazy.nvim)
-
 * More responsive completions
 
-* Implement more specific completion types
-
 * Add *strict_matching* to provide more control over which suggestions are returned
+
+* Add *files_by_suffix* as an alternative (and complementary) method of extracting filenames
 
 ### Kitty Configuration
 
@@ -180,6 +178,7 @@ option = {
     match_urls = true,
     match_directories = true,
     match_files = true,
+    match_files_by_suffix = {},
     match_hidden_files = true,
 
     -- window matching configuration
@@ -332,6 +331,13 @@ Match strings that appear to be files, possibly contained within one or more dir
 - match_hidden_files
 
 Match strings that appear to be hidden files, possibly contained within one or more directories.
+
+- match_files_by_suffix
+
+A somewhat more liberal (and complementary) method of identifying files. By default this
+configuration option is set to an empty table. Add one or more suffixes (without the leading
+"."), then any text that ends with ".suffix" will be identified as a file. This supports both
+strings and lua patterns (eg. "html?" would match files ending with either ".htm" or ".html").
 
 ## Window matching configuration
 

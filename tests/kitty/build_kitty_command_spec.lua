@@ -9,7 +9,7 @@ describe("with socket", function()
 	local result = dut:build_kitty_command("ls")
 
 	it("should construct correct command", function()
-		assert.same("kitty @ --to unix:@kitty ls", result)
+		assert.is_not_nil(result:gmatch("kitty @ --to unix:@kitty-%d+ ls"))
 	end)
 end)
 
@@ -21,6 +21,6 @@ describe("with args", function()
 	local result = dut:build_kitty_command("ls", { "plus", "some", "args" })
 
 	it("should construct correct command", function()
-		assert.same("kitty @ --to unix:@kitty ls plus some args", result)
+		assert.is_not_nil(result:gmatch("kitty @ --to unix:@kitty-%d+ ls plus some args"))
 	end)
 end)

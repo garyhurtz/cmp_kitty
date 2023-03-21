@@ -1,7 +1,4 @@
 .direnv/
-__pycache__
-.pytest_cache
-.mypy_cache/                                               4 K     buffer.lua                                               3.3 K
 todo.md
 
 .envrc

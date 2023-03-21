@@ -174,6 +174,15 @@ function Match:file(obj)
 	end
 end
 
+function Match:file_by_suffix(obj)
+    for _,suffix in ipairs(self.config.match_files_by_suffix) do
+        if obj.label:match("%."..suffix.."$") then
+            obj.kind = cmp.lsp.CompletionItemKind.File
+            return obj
+        end
+    end
+end
+
 function Match:hidden_file(obj)
 	if
 		obj.label:match("^~/[%w_/-]+/%.[%w_-]+%.%w+$") ~= nil
@@ -218,6 +227,7 @@ function Match:match_path(obj)
 	end
 
 	return (self.config.match_urls and self:url(obj))
+        or (next(self.config.match_files_by_suffix) ~= nil and self:file_by_suffix(obj))
 		or (self.config.match_directories and self:directory(obj))
 		or (self.config.match_files and self:file(obj))
 		or (self.config.match_hidden_files and self:hidden_file(obj))

@@ -36,6 +36,7 @@ return {
 	--- filesystem
 	match_directories = true,
 	match_files = true,
+    match_files_by_suffix = {},
 	match_hidden_files = true,
 
 	--
