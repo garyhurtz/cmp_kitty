@@ -25,21 +25,6 @@ in the completions.
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - [Kitty](https://github.com/kovidgoyal/kitty)
 
-## Important note
-
-This plugin is still in active development. Breaking changes may occur. Check back often for changes
-to configuration, setup, features, etc.
-
-Recent Updates:
-
-* More responsive completions
-
-* Add *strict_matching* for more control over which suggestions to return
-
-* Add *match_files_by_suffix* as an alternative and complementary method of extracting filenames
-
-* *match_urls* now supports customizable URL schemes
-
 ### Kitty configuration
 
 This extension requires configuring Kitty to enable remote control. Refer to the
