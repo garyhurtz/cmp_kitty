@@ -366,10 +366,10 @@ either active or focused:
 
 These evaluate tabs and windows according to their titles. By default, *cmp-kitty* always includes
 content from tabs and windows titled *"cmp-include"*, and always excludes content from tabs and
-windows titled *cmp_exclude*, regardless of state.
+windows titled *cmp-exclude*, regardless of state.
 
 The [Kitty docs](https://sw.kovidgoyal.net/kitty/remote-control/) detail how to set tab and window
-titles using scripts. This plugin includes a command that sets a window title to *cmp_exclude*:
+titles using scripts. This plugin includes a command that sets a window title to *cmp-exclude*:
 
     :CmpKittyExcludeWindow
 
