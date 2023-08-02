@@ -66,6 +66,11 @@ describe("root level", function()
         assert.is_true(dut.match_snake_case)
     end)
 
+    it("should have a match_dot_case attribute", function()
+        assert.is_boolean(dut.match_dot_case)
+        assert.is_true(dut.match_dot_case)
+    end)
+
     --- internet
 
     it("should have a match_emails attribute", function()
@@ -92,7 +97,7 @@ describe("root level", function()
 
     it("should have a match_urls attribute", function()
         assert.is_table(dut.match_urls)
-        assert.same(dut.match_urls, {"https?"})
+        assert.same(dut.match_urls, { "https?" })
     end)
 
     it("should have a match_directories attribute", function()

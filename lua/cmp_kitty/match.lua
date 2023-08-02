@@ -20,7 +20,7 @@ function Match:startswith(text, c)
 end
 
 function Match:endswith(text, c)
-    return c == "" or text:sub(- #c) == c
+    return c == "" or text:sub(-#c) == c
 end
 
 function Match:word(obj)
@@ -70,6 +70,13 @@ end
 
 function Match:snake_case(obj)
     if (obj.label:match("^%a[%a_]+%a$") ~= nil) and self:contains(obj.label, "_") then
+        obj.kind = cmp.lsp.CompletionItemKind.Text
+        return obj
+    end
+end
+
+function Match:dot_case(obj)
+    if (obj.label:match("^%a[%a.]+%a$") ~= nil) and self:contains(obj.label, "[.]") then
         obj.kind = cmp.lsp.CompletionItemKind.Text
         return obj
     end
@@ -131,7 +138,7 @@ end
 
 function Match:url(obj)
     for _, scheme in ipairs(self.config.match_urls) do
-        if obj.label:match("^"..scheme .."://[%w-]+%.%w+") ~= nil then
+        if obj.label:match("^" .. scheme .. "://[%w-]+%.%w+") ~= nil then
             obj.kind = cmp.lsp.CompletionItemKind.Text
             return obj
         end
@@ -156,8 +163,8 @@ function Match:directory(obj)
     if
         obj.label:match("^~/[%w_/-]+/?$") ~= nil
         or (
-        obj.label:match("^/?[%w_/-]+/?$") ~= nil
-        and (self:startswith(obj.label, "/") or self:endswith(obj.label, "/"))
+            obj.label:match("^/?[%w_/-]+/?$") ~= nil
+            and (self:startswith(obj.label, "/") or self:endswith(obj.label, "/"))
         )
     then
         obj.kind = cmp.lsp.CompletionItemKind.Folder
@@ -209,6 +216,7 @@ function Match:match_text(obj)
         or (self.config.match_camel_case and self:camel_case(obj))
         or (self.config.match_kebab_case and self:kebab_case(obj))
         or (self.config.match_snake_case and self:snake_case(obj))
+        or (self.config.match_dot_case and self:dot_case(obj))
 end
 
 function Match:match_number(obj)

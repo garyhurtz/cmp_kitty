@@ -31,3 +31,6 @@ test-window:
 
 test-match:
 	nvim --headless -c "PlenaryBustedDirectory tests/match"
+
+test-all:
+	nvim --headless -c "PlenaryBustedDirectory tests"

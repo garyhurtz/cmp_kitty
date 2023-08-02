@@ -146,6 +146,7 @@ option = {
     match_camel_case = true,
     match_kebab_case = true,
     match_snake_case = true,
+    match_dot_case = true,
     match_words_with_punctuation = true,
 
     --- numbers
@@ -258,6 +259,11 @@ designated by a single hyphen, rather than a space. For example, this-is-kebab-c
 
 Match snake-case words, which are groups of two or more case-insensitive words with word boundaries
 designated by a single underscore, rather than a space. For example, this_is_snake_case.
+
+- match_dot_case [default: true]
+
+Match dot-case words, which are groups of two or more case-insensitive words with word boundaries
+designated by a single dot, rather than a space. For example, this.is.dot.case.
 
 - match_words_with_punctuation [default: true]
 
