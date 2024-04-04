@@ -2,7 +2,7 @@
 
 Kitty completion source for [nvim-cmp](https://github.com/hrsh7th/nvim-cmp).
 
-This extension pulls content from Kitty windows and makes it available in nvim-cmp completions.
+This extension extracts content from Kitty windows and makes it available in nvim-cmp completions.
 A wide range of configuration options provide control over the types of information to extract,
 as well as which tabs and windows contribute completions.
 
@@ -15,7 +15,20 @@ test output, and a command line, while another tab might contain other project-r
 This extension pulls content from each of the tabs and windows and makes it available in Neovim
 via completions, which provides a bit of integration between the different tools.
 
-For example, one can access a filename in Neovim by jumping to the command line window, cd'ing into
+Example use cases:
+
+1. While developing a Flask application, one often needs to reference view *endpoints*. While one
+   could create a custom completion source containing endpoints for each project, this can be
+achieved automatically with *cmp-kitty*; Simply create a new Kitty window, run `flask routes`, which
+lists all project endpoints in that window. After jumping back to the original window all project
+endpoints appear as completion candidates.
+
+1. While working on front-end development one often has both HTML and javascript files open, with a
+   javascript file referencing *ids*, *classes*, etc in the HTML. *cmp-kitty* automatically parses
+this content from the HTML window and makes it available in the javascript window (and vice versa),
+allowing auto-completion that automatically updates as the project develops.
+
+1. One can access a specific filename in Neovim by jumping to a new Kitty window, cd'ing into
 the directory containing the file, then running ls. After jumping back to Neovim the filename appears
 in the completions.
 
@@ -31,7 +44,7 @@ This extension requires configuring Kitty to enable remote control. Refer to the
 [Kitty documentation](https://sw.kovidgoyal.net/kitty/remote-control) for detailed information
 about how to do this.
 
-In short, set the *allow_remote_control* line of your kitty.conf to one of:
+In short, set the *allow_remote_control* line of your *kitty.conf* file to one of:
 
     allow_remote_control socket-only
     allow_remote_control socket
@@ -159,6 +172,7 @@ option = {
     match_emails = true,
     match_ip_addrs = true,
     match_uuids = true,
+    match_aws_unique_id = false,
 
     --- paths
     match_urls = { "https?" },
@@ -302,6 +316,12 @@ Match text that appears to be an IP address.
 - match_uuids [default: true]
 
 Match text that appears to be a UUID, optionally wrapped in brackets.
+
+- match_aws_unique_id default: false
+
+Match text that appears to be an AWS Unique ID (Access Key ID, etc).
+
+This is opt-in (defaults *false*) due to potential security implications.
 
 ### Paths
 

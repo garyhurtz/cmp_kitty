@@ -33,6 +33,7 @@ return {
     match_ip_addrs = true,
     match_urls = { "https?" },
     match_uuids = true,
+    match_aws_access_key_id = false,
 
     --- filesystem
     match_directories = true,

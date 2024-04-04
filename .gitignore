@@ -1,8 +1,11 @@
 .direnv/
+.tests/
+
 todo.md
 
 .envrc
 .git
+.tests
 *.log
 *.log*
 *.txt

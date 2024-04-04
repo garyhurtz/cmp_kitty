@@ -76,7 +76,7 @@ function Match:snake_case(obj)
 end
 
 function Match:dot_case(obj)
-    if (obj.label:match("^%a[%a.]+%a$") ~= nil) and self:contains(obj.label, "[.]") then
+    if (obj.label:match("^%a[%a_.]+[%a_]*%a$") ~= nil) and self:contains(obj.label, "[.]") then
         obj.kind = cmp.lsp.CompletionItemKind.Text
         return obj
     end
@@ -117,6 +117,14 @@ end
 
 function Match:hex(obj)
     if (obj.label:match("^#?%x+$") ~= nil) or (obj.label:match("^0x%x+$") ~= nil) then
+        obj.kind = cmp.lsp.CompletionItemKind.Value
+        return obj
+    end
+end
+
+function Match:aws_unique_id(obj)
+    -- https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-unique-ids
+    if obj.label:match("A%u%uA%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w") then
         obj.kind = cmp.lsp.CompletionItemKind.Value
         return obj
     end
@@ -247,6 +255,7 @@ function Match:match_computing(obj)
     return (self.config.match_emails and self:email(obj))
         or (self.config.match_ip_addrs and self:ip(obj))
         or (self.config.match_uuids and self:uuid(obj))
+        or (self.config.match_aws_unique_id and self:aws_unique_id(obj))
 end
 
 function Match:match(obj)
